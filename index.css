@@ -185,3 +185,128 @@ body{
 .filter{
     display: flex;
 }
+
+.menu h1{
+    font-size: 1.8vw;
+    margin-left: 5vw;
+    font-weight: 600;
+}
+
+.Restaurant-dropdown-parent{
+    background-color: #e9e8e8;
+    padding: 3vh;
+    padding-left: 10vw;  
+    padding-right: 10vw; 
+    border-radius: 14px; 
+}
+
+.Restaurant-dropdown{
+    background-color: #fff;
+    margin-top: 2vw;
+    padding: 1vw;
+    border-radius: 10px;
+    box-shadow: 0 5px 8px rgba(0,0,0,0.2);
+}
+
+.inner-Restaurant-dropdown{
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.inner-Restaurant-dropdown span{
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.ItemList{
+    margin-top: 2vh;
+}
+
+.Itemlist-inner{
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #bab9b9;
+    margin-bottom: 2vh;
+    padding-bottom: 2vh;
+
+}
+
+.Itemlist-inner-inner{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 1vh;
+}
+
+.image{
+    width: 10vw;
+    height: 16.3vh;    
+    display: 'block';
+    margin-left: 4vw;
+    border-radius: 8px;
+}
+
+.Add{
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid rgb(193, 193, 193);
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    color: #1BA672;
+    box-shadow: 0 5px 8px rgba(0,0,0,0.2);
+    margin-top: -2%;
+    margin-left: 2%;
+    cursor: pointer;    
+}
+
+.Cart-Inner{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 4vw;
+    align-items: center;
+}
+
+.clear-cart{
+    border-radius: 10px;
+    height: 5vh;
+    background-color: #fff;
+    color: rgb(251, 127, 127);
+    border: 1px solid rgb(251, 127, 127);
+    padding: 5px 14px;
+}
+
+.clear-cart:hover{
+    background-color: rgb(251, 127, 127);
+    color: #fff;
+    transition-duration: 0.5s;
+    cursor: pointer;    
+}
+
+.form-input{
+    border-radius: 8px;
+    padding: 4px 8px;
+    border: 1px solid rgba(0, 0, 0);
+    margin: 10px;
+    box-shadow: 0 5px 8px rgba(0,0,0,0.2);
+}
+
+.submit{
+    border-radius: 8px;
+    padding: 5px 14px;
+    border: none;
+    background-color: #E84F3D;
+    color: #fff;
+}
+
+.submit:hover{
+    background-color: #fff;
+    color: #E84F3D;
+    transition-duration: 0.5s;
+    transform: scale(1.1);
+    cursor: pointer;
+    box-shadow: 0 5px 8px #E84F3D;
+}

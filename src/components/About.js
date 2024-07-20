@@ -1,0 +1,14 @@
+import React from "react";
+import User from "./User";
+
+const About = () => {
+    return (
+        <div>
+            <h1>About Us</h1>
+            <User />
+            <h1>Created By Deepanshu Varshney</h1>
+        </div>
+    )
+};
+
+export default About;
