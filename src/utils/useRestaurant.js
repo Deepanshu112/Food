@@ -1,20 +1,22 @@
-import { MENU_API } from "../utils/contains";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { MENU_API } from "../utils/constants";
+import { MENU_DATA } from "../mocks/MOCK_MENU_DATA";
 
-const useRestaurant = (resId) => {
 
+const useRestaurant =(resId)=>{
     const [resInfo, setResInfo] = useState(null);
-
     useEffect(() => {
-        fetchData();
-    }, [])
-
-    const fetchData = async() => {
-        const data = await fetch(MENU_API + resId);
-        const json = await data.json();
+        fetchMenu();
+      }, []);
+    
+   const fetchMenu = () => {
+        const json = MENU_DATA.find(obj=> obj.id===resId)
+        console.log(json)
         setResInfo(json.data);
-    };
-    return resInfo;
-};
+      };
 
+    return resInfo;
+
+};
 export default useRestaurant;

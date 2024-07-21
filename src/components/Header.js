@@ -1,57 +1,73 @@
-import { useContext, useState } from "react";
-import {LOGO_URL} from "../utils/contains";
+import { useState, useEffect } from "react";
+import Mylogo from "../../imgs/logo.png";
 import { Link } from "react-router-dom";
-import useOnlineStatus from "../utils/useOnlineStatus";
-import UserContext from "../utils/UserContext";
+// import { useContext } from "react";
 import { useSelector } from "react-redux";
+import { useLocation } from 'react-router-dom'
+import { LOGO_URL } from "../utils/constants";
+
+
+const Title = () => (
+  <Link className=" " to="/">  <div className="text-white flex items-center mx-4">
+    <img data-testid="logo" className=" h-15 w-20" src={LOGO_URL} alt="" />
+    <h1 className="font-serif font-bold text-2xl m-0 mx-1"></h1>
+  </div>
+  </Link>
+
+);
 
 const Header = () => {
+  const [isFixed, setIsFixed]=useState(false);
+  const location = useLocation();
+  const cartItems = useSelector(store => store.cart.items);
+  const [btnName, setBtnName] = useState("Login");
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
 
-    const[btnNameReact,setbtnNameReact] = useState("Sign In");
+    window.addEventListener('scroll', handleScroll);
+  },[]);
+  return (
+    <div className={ `font-Lato ${isFixed? 'fixed z-10': 'relative'} w-full`}>
+      <div className="bg-fixed items-center bg-black shadow-xl flex flex-col sm:justify-between sm:flex-row">
+        <Title />
+        <div className="nav-items py-5 whitespace-nowrap">
+          <ul className="flex text-white space-x-1 mx-4 ">
+            <li className={`p-2 px-4 rounded-2xl hover:bg-slate-800   ${location.pathname == "/" ? "bg-slate-800" : "hover:scale-110"}`}>
+              <Link className=" " to="/">Home</Link>
+            </li>
+            <li className={`p-2 px-4 rounded-2xl hover:bg-slate-800   ${location.pathname == "/about" ? "bg-slate-800" : "hover:scale-110"}`}>
+              <Link className=" " to="/about">About</Link>
+            </li>
+            <li className={`p-2 px-4 rounded-2xl hover:bg-slate-800   ${location.pathname == "/help" ? "bg-slate-800" : "hover:scale-110"}`}>
+              <Link className="" to="/help">Help</Link>
+            </li>
+            <li className={`p-2 px-4 rounded-2xl hover:bg-slate-800   ${location.pathname == "/cart" ? "bg-slate-800" : "hover:scale-110"}`}>
+              <Link data-testid="cart" className="" to="/cart">
+                Cart-{cartItems.length}
+              </Link>
+            </li>
+            <li className={`p-2 px-4 rounded-2xl hover:bg-slate-800 hover:scale-110`}>
+              <button
+                className="login"
+                onClick={() => {
+                  btnName === "Login" ? setBtnName("Logout") : setBtnName("Login");
+                }}
+              >
+                {btnName}
+              </button>
+            </li>
 
-    const onlineStatus = useOnlineStatus();
-
-    const { loggedInUser } = useContext(UserContext);
-    // console.log(loggedInUser);
-
-    // Subscribing to the store without using the selector
-    const cartItems = useSelector((store) => store.cart.items);
-
-    return (
-        <div className="header">
-            <div className="logo-container">
-            <Link to="/"><img className="logo" src={LOGO_URL} /></Link>
-            </div>
-            <div className="nav-items">
-                <ul>
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/about">About Us</Link>
-                    </li>
-                    <li>
-                        <Link to="/contact">Contact Us</Link>
-                    </li>
-                    <li>
-                        <Link to="/cart">Cart ({cartItems.length})</Link>
-                    </li>
-                    <button 
-                        className="login"
-                        onClick={() => {
-                            btnNameReact === "Sign In"
-                             ? setbtnNameReact("Sign Out")
-                             : setbtnNameReact("Sign In");
-                            ;
-                        }}
-                    >
-                        {btnNameReact}
-                    </button>
-                    {/* <li>{loggedInUser}</li> */}
-                </ul>
-            </div>
+          </ul>
         </div>
-    )
-}
+      </div>
+    </div>
 
+  );
+};
 export default Header;

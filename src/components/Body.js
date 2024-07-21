@@ -1,95 +1,113 @@
-import React, { useEffect, useState } from "react";
-import RestaurantCard, { withPromotedLabel } from "./RestaurantCard";
+import RestaurantCard from "./RestaurantCard";
+import { useEffect, useState, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
-import useOnlineStatus from "../utils/useOnlineStatus";
-
+import { filterData } from "../utils/helper";
+import useOnline from "../utils/useOnline";
+import {data} from "../mocks/MOCK_RES_DATA"
 const Body = () => {
+  //state  variable
+  const [listOfRestaurants, setlistOfRestaurants] = useState([]);
+  const [filteredRestaurants, setfilteredRestaurants] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [noReserr, setnoReserr] = useState("");
+  const [loading, setLoading]=useState(true);
 
-    const [Listofrestaurants, setListofrestaurants] = useState([]);
-    const [filteredRestrant, setfilteredRestrant] = useState([]);
 
+  // const { user, setUser } = useContext(userContext);
 
-    const [searchText, setSearchText] = useState("");
-
-    const RestaurantCardpromoted = withPromotedLabel(RestaurantCard);
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        const data = await fetch(
-            "https://www.swiggy.com/dapi/restaurants/list/v5?lat=27.8973944&lng=78.0880129&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
-        );
-        const json = await data.json();
-
-        // console.log(json.data.cards[1].card.card.gridElements.restaurants);
-        setListofrestaurants(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-        setfilteredRestrant(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-    };
-
-    const onlineStatus = useOnlineStatus();
-
-    if(onlineStatus == false){
-        return <div>You're not online!!!, please check your internet connection.</div>
+  useEffect(() => {
+    const fetchData = async ()=> {
+      const json = data;
+      const datay=json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+      const resData = (datay )? (json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants): (json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+      setTimeout(()=>{
+        setlistOfRestaurants(resData);
+        setfilteredRestaurants(resData);
+        setLoading(false)
+        }, 2000)
     }
+    fetchData();
+  }, []);
 
-    return Listofrestaurants.length === 0 ? <Shimmer /> : (
-        <div className="Body">
-            <div className="filter">
-                <div className="search">
-                    <input type="text" 
-                        className="search-box" 
-                        placeholder="Search..."
-                        value={searchText}
-                        onChange={(e) => {
-                            setSearchText(e.target.value);
-                        }}
-                    />
-                    <button
-                        className="search-btn"
-                        onClick={() => {
-                            const filterdListofres = Listofrestaurants.filter(
-                                (res) => res.info.name.toLowerCase().includes(searchText.toLowerCase())
-                            );
-                            setfilteredRestrant(filterdListofres);
-                        }}
-                    >
-                        Search
-                    </button>
-                </div>
-                <button 
-                    className="filter-btn"
-                    onClick={() => {
-                        filteredlist = Listofrestaurants.filter(
-                            (res) => res.info.avgRating >= 4.2
-                        );
-                        setListofrestaurants(filteredlist);
-                    }}
-                >   
-                 Top Rated Restaurant
-                </button> 
-            </div>
-            <div className="res-container">
-                {filteredRestrant.map((restaurant) => (
-                    <Link
-                        key={restaurant.info.id}
-                        to={"/restaurants/"+ restaurant.info.id}
-                    >
-                        {
-                        restaurant.info.promoted ? 
-                            ( <RestaurantCardpromoted resData={restaurant} />                                 
-                            ):(
-                                 <RestaurantCard resData={restaurant}/>
-                            )
-                        }
-                        
-                    </Link>
-                ))}            
-            </div>
+  function fetchData() {
+        const json = data;
+        const datay=json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+        const resData = (datay )? (json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants): (json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+        setlistOfRestaurants(resData);
+        setfilteredRestaurants(resData);
+      }
+   
+  const performSearch = (searchText, restaurants) => {
+    if (searchText != "") {
+      const filtered = filterData(searchText, restaurants);
+      setfilteredRestaurants(filtered);
+      setnoReserr("")
+      if (filtered?.length === 0) {
+        setnoReserr("No Restaurants Found!");
+      }
+    }
+    else {
+      setnoReserr("");
+      setfilteredRestaurants(restaurants);
+    }
+  }
+  const isOnline = useOnline();
+  if (!isOnline) {
+    return <h1>Offline, please check your internet connection!!!</h1>;
+  }
+
+  return (loading) ? (
+    <Shimmer />
+  ) : (
+    <div className="body">
+      <div className="filter bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] text-slate-100 text-center p-5">
+        <div className="m-8 mt-0 whitespace-nowrap">
+          <div className="heading text-3xl font-Oswald text-black">Order Food Online Easily</div>
+          <div className="m-2 font-Roboto text-black">Find best restaurants near you</div>
         </div>
-    )
-}
+        <div className="search m-3 text-black font-Lato ">
+          <input
+            data-testid="search-input"
+            type="text"
+            className="search-box rounded-md h-8 w-4/5 sm:w-1/5 p-3"
+            placeholder="Search Restaurants"
+            value={searchText}
+            onChange={
+              (e) => {
+                setSearchText(e.target.value);
+                performSearch(e.target.value, listOfRestaurants);
+                console.log(searchText);
+              }
+            }
+          />
+          <button data-testid="searchbtn"
+            className="search-btn m-2 h-8 p-1 px-2 bg-red-700 text-slate-100 hidden sm:inline-block rounded-md"
+            onClick={() => {
+              performSearch(searchText, listOfRestaurants);
+            }}
+          >
+            Search
+          </button>
+        </div>
+      </div>
+      <div className="mx-10 my-10 p-5">
+      {noReserr && <div className="flex items-center justify-center text-center"> <p className="text-lg text-red-700 font-semibold ">{noReserr}</p></div>}
+        <div data-testid="res-list" className="res-container grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 mx-4 gap-12">
+          {filteredRestaurants.map((restaurant) => (
+            <Link
+              className="links"
+              key={restaurant.info.id}
+              to={"/restaurants/" + restaurant.info.id}
+            >
+              <RestaurantCard resData={restaurant} />
+            </Link>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
+};
 
 export default Body;
